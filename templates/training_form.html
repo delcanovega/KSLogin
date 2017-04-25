@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+    <body>
+        <!-- Throws '400 Bad Request' when entering POST -->
+        <form id = "value" action = {{vs.route}} method = "post">
+            <p>Enter the following phrase: {{vs.asked}}</p>
+            <p><input id="a" type=text name=collected /></p>
+            <p>Enter DONE to conclude training</p>
+            <input type="submit" value="Submit">
+        </form>
+
+        {% if vs.ellapsed > 0 %}
+            <h3>Error: {{vs.ellapsed}} s</h3>
+        {% endif %}
+
+    </body>
+</html>
