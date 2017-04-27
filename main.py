@@ -22,19 +22,16 @@ def train():
 def train_user(username):
     if request.method == 'POST':
         values = {}
-        values["collected"] = request.form['value']
+        values["collected"] = request.form['collected']
         values["asked"] = request.form['asked']
         values["ellapsed"] = time() - float(request.form['timestamp'])
-        print values["collected"]
-        print values["asked"]
-        print values["ellapsed"]
         # Extraer features
         # Almacenar features en mongodb
         # El clasificador se creara y entrenara en /login
-        return "POST"
+        return "<p>POST</p>"
     if request.method == 'GET':
         values = {}
-        values["asked"] = "El caballo blanco"
+        values["asked"] = "Perro"
         # Iniciar timestamp
         values["timestamp"] = time()
         values["ellapsed"] = 0

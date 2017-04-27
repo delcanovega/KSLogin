@@ -4,7 +4,9 @@
         <!-- Throws '400 Bad Request' when entering POST -->
         <form id = "value" action = {{vs.route}} method = "post">
             <p>Enter the following phrase: {{vs.asked}}</p>
-            <p><input id="a" type=text name=collected /></p>
+            <p><input type=text name=collected /></p>
+            <p><input type=hidden name=asked value={{vs.asked}} /></p>
+            <p><input type=hidden name=timestamp value={{vs.timestamp}} /></p>
             <p>Enter DONE to conclude training</p>
             <input type="submit" value="Submit">
         </form>
