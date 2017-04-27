@@ -25,10 +25,17 @@ def train_user(username):
         values["collected"] = request.form['collected']
         values["asked"] = request.form['asked']
         values["ellapsed"] = time() - float(request.form['timestamp'])
+        if values["collected"] == "DONE":
+            return ("<p>DONE</p>")
         # Extraer features
+        mistakes = compare_input(values["asked"], values["collected"])
         # Almacenar features en mongodb
         # El clasificador se creara y entrenara en /login
-        return "<p>POST</p>"
+        # Reiniciar values para seguir entrenando
+        values["timestamp"] = time()
+        values["ellapsed"] = 0
+        values["route"] = "/train/" + username
+        return render_template("training_form.html", vs = values)
     if request.method == 'GET':
         values = {}
         values["asked"] = "Perro"
@@ -39,6 +46,15 @@ def train_user(username):
         # Formulario que te pida escribir una palabra (o frase)
         return render_template("training_form.html", vs = values)
 
+def compare_input(target, word):
+    mistakes = 0
+    for i in range(0, len(word)):
+        if (i < len(target) and target[i] != word[i]):
+            mistakes = mistakes + 1
+        if (i >= len(target)):
+            mistakes = mistakes + (len(word)-i)
+            break
+    return mistakes
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
