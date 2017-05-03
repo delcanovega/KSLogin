@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, make_response
 from flask import request
 from time import time
 from humbledb import Mongo, Document
@@ -9,6 +9,10 @@ app = Flask(__name__)
 class DataDoc(Document):
     config_database = 'kslogin'
     config_collection = 'data'
+
+class UsersDoc(Document):
+    config_database = 'kslogin'
+    config_collection = 'users'
 
 class WordsDoc(Document):
     config_database = 'kslogin'
@@ -89,25 +93,35 @@ def compare_input(target, word):
             break
     return mistakes
 
-def concatenate(time, mistakes, user):
-    ss = ""
-    ss += time
-    ss += ";"
-    ss += mistakes
-    ss += ";"
-    ss += user
-    ss += "\n"
-    return ss
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == 'GET':
+        with Mongo:
+            data = DataDoc.find()
+            ss = ""
+            for d in data:
+                try:
+                    ss += d["asked"]
+                    ss += ";"
+                    ss += d["collected"]
+                    ss += ";"
+                    ss += str(d["ellapsed"])
+                    ss += ";"
+                    ss += str(d["mistakes"])
+                    ss += ";"
+                    ss += d["user"]
+                    ss += "\n"
+                except Exception as e:
+                    pass
+            output = make_response(ss)
+            output.headers["Content-Disposition"] = "attatchment; filename=export.csv"
+            output.headers["Content-type"] = "text/csv"
         # Crear el clasificador y entrenarlo con los datos mas actualizados
         # (extraidos de mongodb)
         # Formulario que pida nombre de usuario y una palabra (o frase)
         # Iniciar timestamp
         # return render_template("login_form.html")
-        return "GET"
+        return output
     if request.method == 'POST':
         # Comprobar que coincidencia del usuario con mongodb
         # Extraer features de la frase
