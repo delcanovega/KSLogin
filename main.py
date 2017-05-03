@@ -1,14 +1,30 @@
 from flask import Flask, render_template
 from flask import request
 from time import time
+from humbledb import Mongo, Document
 
 app = Flask(__name__)
+
+class DataDoc(Document):
+    config_database = 'kslogin'
+    config_collection = 'data'
+
+class WordsDoc(Document):
+    config_database = 'kslogin'
+    config_collection = 'words'
 
 @app.route("/")
 def index():
     # Pequeno 'about'
     # Accesos a /train y /login
-    # Donaciones
+    # Iniciar base de datos
+    words = ['Hipnotizar', 'Caballo', 'Hipopotamo', 'Elefante', 'Hipotalamo',
+             'Camion', 'Radiador', 'Estercolero', 'KeyStrokeLogin', 'Perro',
+             'Cantimplora', 'Estuche', 'Taquilla', 'Coquilla', 'Casillero',
+             'Cuaderno', 'Portafolios', 'Portaminas', 'Comecocos', 'Agua',
+             'Paraguero', 'Pinguino', 'Pantalones', 'Mocasines', 'Tirantes',
+             'Mochila', 'Maletin', 'Escritorio', 'Pizarra', 'Contaminacion']
+
     return "Work in progress"
 
 @app.route("/train")
@@ -21,15 +37,18 @@ def train():
 @app.route("/train/<username>", methods=["GET", "POST"])
 def train_user(username):
     if request.method == 'POST':
-        values = {}
+        values = DataDoc()
         values["collected"] = request.form['collected']
         values["asked"] = request.form['asked']
         values["ellapsed"] = time() - float(request.form['timestamp'])
         if values["collected"] == "DONE":
             return render_template("training_done.html")
         # Extraer features
-        mistakes = compare_input(values["asked"], values["collected"])
+        values["mistakes"] = compare_input(values["asked"], values["collected"])
+        values["user"] = username
         # Almacenar features en mongodb
+        with Mongo:
+            DataDoc.insert(values)
         # El clasificador se creara y entrenara en /login
         # Reiniciar values para seguir entrenando
         values["timestamp"] = time()
@@ -55,6 +74,16 @@ def compare_input(target, word):
             mistakes = mistakes + (len(word)-i)
             break
     return mistakes
+
+def concatenate(time, mistakes, user):
+    ss = ""
+    ss += time
+    ss += ";"
+    ss += mistakes
+    ss += ";"
+    ss += user
+    ss += "\n"
+    return ss
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
