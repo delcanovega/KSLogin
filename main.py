@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from flask import request
 from time import time
 from humbledb import Mongo, Document
+from random import randint
 
 app = Flask(__name__)
 
@@ -17,6 +18,10 @@ class WordsDoc(Document):
 def index():
     # Pequeno 'about'
     # Accesos a /train y /login
+    return "Work in progress"
+
+@app.route("/initdb")
+def init_db():
     # Iniciar base de datos
     words = ['Hipnotizar', 'Caballo', 'Hipopotamo', 'Elefante', 'Hipotalamo',
              'Camion', 'Radiador', 'Estercolero', 'KeyStrokeLogin', 'Perro',
@@ -24,8 +29,12 @@ def index():
              'Cuaderno', 'Portafolios', 'Portaminas', 'Comecocos', 'Agua',
              'Paraguero', 'Pinguino', 'Pantalones', 'Mocasines', 'Tirantes',
              'Mochila', 'Maletin', 'Escritorio', 'Pizarra', 'Contaminacion']
-
-    return "Work in progress"
+    for w in words:
+        doc = WordsDoc()
+        doc["value"] = w
+        with Mongo:
+            WordsDoc.insert(doc)
+    return "Database initialized"
 
 @app.route("/train")
 def train():
@@ -54,10 +63,15 @@ def train_user(username):
         values["timestamp"] = time()
         values["ellapsed"] = 0
         values["route"] = "/train/" + username
+        with Mongo:
+            js = WordsDoc.find_one(skip=randint(0,WordsDoc.count()))
+            values["asked"] = js["value"]
         return render_template("training_form.html", vs = values)
     if request.method == 'GET':
         values = {}
-        values["asked"] = "Perro"
+        with Mongo:
+            js = WordsDoc.find_one(skip=randint(0,WordsDoc.count()))
+            values["asked"] = js["value"]
         # Iniciar timestamp
         values["timestamp"] = time()
         values["ellapsed"] = 0
