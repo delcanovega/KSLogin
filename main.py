@@ -26,7 +26,7 @@ def train_user(username):
         values["asked"] = request.form['asked']
         values["ellapsed"] = time() - float(request.form['timestamp'])
         if values["collected"] == "DONE":
-            return ("<p>DONE</p>")
+            return render_template("training_done.html")
         # Extraer features
         mistakes = compare_input(values["asked"], values["collected"])
         # Almacenar features en mongodb

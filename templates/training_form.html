@@ -1,8 +1,10 @@
 <!doctype html>
 <html>
     <body>
-        <!-- Throws '400 Bad Request' when entering POST -->
+
+        <div align="center">
         <form id = "value" action = {{vs.route}} method = "post">
+
             <p>Enter the following phrase: {{vs.asked}}</p>
             <p><input type=text name=collected /></p>
             <p><input type=hidden name=asked value={{vs.asked}} /></p>
@@ -10,6 +12,7 @@
             <p>Enter DONE to conclude training</p>
             <input type="submit" value="Submit">
         </form>
+        </div>
 
         {% if vs.ellapsed > 0 %}
             <h3>Error: {{vs.ellapsed}} s</h3>
