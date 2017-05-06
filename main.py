@@ -4,6 +4,7 @@ from time import time
 from humbledb import Mongo, Document
 from random import randint
 import pandas as pd
+import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
 app = Flask(__name__)
@@ -133,9 +134,23 @@ def login():
         values = {}
         values["timestamp"] = time()
         values["ellapsed"] = 0
-        return render_template("login_form.html")
+        with Mongo:
+            js = WordsDoc.find_one(skip=randint(0,WordsDoc.count()))
+            values["asked"] = js["value"]
+        return render_template("login_form.html", vs = values)
     if request.method == 'POST':
-        # Comprobar que coincidencia del usuario con mongodb
+        values = {}
+        values["collected"] = request.form['collected']
+        values["asked"] = request.form['asked']
+        values["ellapsed"] = time() - float(request.form['timestamp'])
+        values["mistakes"] = compare_input(values["asked"], values["collected"])
+        values["user"] = request.form['username']
+        req = np.array([values["mistakes"], values["ellapsed"]/len(values["collected"])])
+        if clf.predict(req) == values["user"]:
+            return "Login succesful"
+        else:
+            return "Access denied"
+        # Comprobar que coincidencia del usuario
         # Extraer features de la frase
         # Usar el clasificador para autenticar
         return "POST"
