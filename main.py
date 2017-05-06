@@ -1,11 +1,16 @@
+# Libraries for the webapp
 from flask import Flask, render_template, make_response
 from flask import request
-from time import time
+# Database
 from humbledb import Mongo, Document
+# Utilities
+from time import time
 from random import randint
+# Machine learning
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.externals import joblib
 
 app = Flask(__name__)
 
@@ -129,6 +134,7 @@ def login():
         # Crear el clasificador y entrenarlo con los datos mas actualizados
         # (extraidos de mongodb)
         clf = generate_clf(data)
+        joblib.dump(clf, 'rf_clf.pkl')
         # Formulario que pida nombre de usuario y una palabra (o frase)
         # Iniciar timestamp
         values = {}
@@ -146,6 +152,8 @@ def login():
         values["mistakes"] = compare_input(values["asked"], values["collected"])
         values["user"] = request.form['username']
         req = np.array([values["mistakes"], values["ellapsed"]/len(values["collected"])])
+        req = req.reshape(1, -1)
+        clf = joblib.load('rf_clf.pkl')
         if clf.predict(req) == values["user"]:
             return "Login succesful"
         else:
