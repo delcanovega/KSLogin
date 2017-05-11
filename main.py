@@ -18,10 +18,6 @@ class DataDoc(Document):
     config_database = 'kslogin'
     config_collection = 'data'
 
-class UsersDoc(Document):
-    config_database = 'kslogin'
-    config_collection = 'users'
-
 class WordsDoc(Document):
     config_database = 'kslogin'
     config_collection = 'words'
@@ -29,8 +25,7 @@ class WordsDoc(Document):
 @app.route("/")
 def index():
     # Pequeno 'about'
-    # Accesos a /train y /login
-    return "Work in progress"
+    return render_template("index.html")
 
 @app.route("/initdb")
 def init_db():

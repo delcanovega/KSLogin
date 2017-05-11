@@ -4,6 +4,9 @@ h1 {
 h2 {
     text-align: center;
 }
+ul {
+    text-align: center;
+}
 form {
     display: inline-block;
     text-align: center;
