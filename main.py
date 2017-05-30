@@ -164,7 +164,7 @@ def generate_clf(data):
     X = data[feature_cols]
     y = data['User']
 
-    clf = RandomForestClassifier(n_estimators=50)
+    clf = RandomForestClassifier(n_estimators=10)
     clf = clf.fit(X, y)
     return clf
 

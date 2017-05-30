@@ -1,5 +1,11 @@
 <!doctype html>
 <html>
+    <head>
+        <script src="{{url_for('static', filename='jquery-3.2.1.min.js')}}">
+        </script>
+        <script src="{{url_for('static', filename='key_features.js')}}">
+        </script>
+    </head>
     <body>
 
         <div align="center">
@@ -11,6 +17,12 @@
             <p><input type=hidden name=timestamp value={{vs.timestamp}} /></p>
             <p>Enter DONE to conclude training</p>
             <input type="submit" value="Submit">
+            <p>Ellapsed: <span>0</span></p>
+
+            <input type=hidden id=f1 name=presd_k value={{vs.presd_k}} />
+            <input type=hidden id=f2 name=avg_key_dw value={{vs.avg_key_dw}} />
+            <input type=hidden id=f3 name=avg_flight value={{vs.avg_flight}} />
+
         </form>
         </div>
 
