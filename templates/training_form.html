@@ -1,34 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
     <head>
-        <script src="{{url_for('static', filename='jquery-3.2.1.min.js')}}">
-        </script>
-        <script src="{{url_for('static', filename='key_features.js')}}">
-        </script>
+        <script src="{{url_for('static', filename='jquery-3.2.1.min.js')}}"></script>
+        <script src="{{url_for('static', filename='key_features.js')}}"></script>
     </head>
-    <body>
 
+    <body>
         <div align="center">
         <form id = "value" action = {{vs.route}} method = "post">
 
             <p>Enter the following phrase: {{vs.asked}}</p>
-            <p><input type=text name=collected /></p>
+            <p><input id=q type=text name=collected /></p>
             <p><input type=hidden name=asked value={{vs.asked}} /></p>
-            <p><input type=hidden name=timestamp value={{vs.timestamp}} /></p>
             <p>Enter DONE to conclude training</p>
             <input type="submit" value="Submit">
-            <p>Ellapsed: <span>0</span></p>
 
-            <input type=hidden id=f1 name=presd_k value={{vs.presd_k}} />
-            <input type=hidden id=f2 name=avg_key_dw value={{vs.avg_key_dw}} />
-            <input type=hidden id=f3 name=avg_flight value={{vs.avg_flight}} />
+            <input type=hidden id=f1 name=presd_k />
+            <input type=hidden id=f2 name=avg_key_dw />
+            <input type=hidden id=f3 name=avg_flight />
+            <input type=hidden id=f4 name=uses_mayus value={{vs.uses_mayus}} />
 
         </form>
         </div>
-
-        {% if vs.ellapsed > 0 %}
-            <h3>Error: {{vs.ellapsed}} s</h3>
-        {% endif %}
-
     </body>
 </html>
